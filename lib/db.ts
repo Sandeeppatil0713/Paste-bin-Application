@@ -50,20 +50,20 @@ export async function getPaste(slug: string): Promise<Paste | null> {
 
   const paste = rows[0] as Paste;
 
-  // Check time expiry
+ 
   if (paste.expires_at && new Date(paste.expires_at) < new Date()) {
     return null;
-  }
+  } // Check time expiry
 
-  // Check view limit
+
   if (paste.max_views !== null && paste.view_count >= paste.max_views) {
     return null;
-  }
+  }// Check view limit
 
-  // Increment view count
+
   await sql`
     UPDATE pastes SET view_count = view_count + 1 WHERE slug = ${slug}
-  `;
+  `;   // Incrementing  view count
 
   return paste;
 }
