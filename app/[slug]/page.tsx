@@ -1,27 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import CopyButtons from './CopyButtons';
-
-type Paste = {
-  slug: string;
-  title: string | null;
-  content: string;
-  language: string;
-  expires_at: string | null;
-  max_views: number | null;
-  view_count: number;
-  created_at: string;
-};
-
-async function fetchPaste(slug: string): Promise<Paste | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const res = await fetch(`${baseUrl}/api/pastes/${slug}`, {
-    cache: 'no-store',
-  });
-
-  if (!res.ok) return null;
-  return res.json();
-}
+import { getPaste } from '@/lib/db';
 
 export default async function PastePage({
   params,
@@ -29,7 +9,7 @@ export default async function PastePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const paste = await fetchPaste(slug);
+  const paste = await getPaste(slug);
 
   if (!paste) notFound();
 
